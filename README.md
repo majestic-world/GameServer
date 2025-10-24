@@ -1,167 +1,105 @@
-\# Majestic-World Server Manager
+# Majestic-World Server Manager
 
-Console application for managing Lineage 2 game servers with safe shutdown and automatic updates.
+Uma aplicação de console simples e poderosa para gerenciar seus servidores de Lineage 2, com desligamentos seguros e atualizações automáticas.
 
-\## Requirements
+## ✨ Recursos
 
-\- .NET 9.0
+* **🛡️ Desligamento Seguro:** Envia um sinal `Ctrl+C` ao processo Java, permitindo um desligamento gracioso que salva todos os dados do jogo.
+* **🔄 Atualização Automática:** Copia automaticamente todos os arquivos `.jar` mais recentes do seu diretório de build para a pasta `libs` do servidor.
+* **🎨 Logs Coloridos:** Identifique problemas facilmente com erros em vermelho, avisos em amarelo e mensagens de desligamento em ciano.
+* **🔁 Reinício Automático:** Reinicia automaticamente o servidor se ele travar (detecta o código de saída 2).
 
-\- Java 17+
+-----
 
-\- Windows OS
+## 📋 Requisitos
 
+* .NET 9.0
+* Java 17+
+* Windows OS
 
+-----
 
-\## Configuration
+## ⚙️ Configuração
 
-
-
-Edit these paths in `Program.cs`:
+Antes de executar, você **deve** editar os seguintes caminhos no `Program.cs`:
 
 ```csharp
-
+// Caminho para o diretório do seu game server
 private const string ServerPath = @"C:\\Users\\Dev\\Desktop\\MyServer\\gameserver";
 
+// Caminho para seus arquivos .jar compilados (saída do build)
 private const string OutputJarPath = @"C:\\Recreate\\Lucera\\out\\jar";
-
 ```
 
+-----
 
+## 🚀 Uso
 
-\## Features
+### Opções do Menu
 
+1.  **Iniciar Servidor:** Inicia sem verificar atualizações.
+2.  **Iniciar Servidor (com atualizações):** Atualiza os JARs e, em seguida, inicia.
+3.  **Atualizar JARs apenas:** Copia todos os arquivos `.jar` para o servidor.
+4.  **Parar Servidor:** Executa um desligamento seguro.
+5.  **Sair:** Fecha o gerenciador.
 
+### Atalhos
 
-\- \*\*Safe Shutdown\*\* - Sends Ctrl+C to Java process for graceful shutdown
+> **Importante:** Enquanto o gerenciador estiver em execução, pressione **`Ctrl+C`** a qualquer momento para acionar um **desligamento seguro**.
 
-\- \*\*Auto Update\*\* - Copies all JAR files from output directory to server
+-----
 
-\- \*\*Color-coded Logs\*\* - Errors in red, warnings in yellow, shutdown in cyan
+## 🛠️ Como Funciona
 
-\- \*\*Auto Restart\*\* - Restarts server on crash (exit code 2)
+### Processo de Atualização
 
+A lógica de atualização copia todos os arquivos `.jar` do seu caminho de saída especificado para o diretório `libs` do servidor.
 
+* **Origem:** `C:\Recreate\Lucera\out\jar\*.jar`
+* **Destino:** `C:\Users\Dev\Desktop\MyServer\gameserver\libs\`
 
-\## Usage
+### Desligamento Seguro
 
+1.  Um sinal `Ctrl+C` (SIGINT) é enviado ao processo `java.exe`.
+2.  O servidor do jogo (programado para lidar com isso) captura o sinal, salva todos os dados e desconecta os jogadores.
+3.  O gerenciador aguarda até 30 segundos para que o processo seja encerrado.
+4.  Se o processo ainda estiver em execução após o tempo limite, ele é finalizado à força.
 
+-----
 
-\### Menu Options
+## 📦 Build
 
-
-
-1\. \*\*Start Server\*\* - Start without checking for updates
-
-2\. \*\*Start Server (with updates)\*\* - Update JARs then start
-
-3\. \*\*Update JARs only\*\* - Copy all `.jar` files to server
-
-4\. \*\*Stop Server\*\* - Safe shutdown with data saving
-
-5\. \*\*Exit\*\* - Close manager
-
-
-
-\### Shortcuts
-
-
-
-\- \*\*Ctrl+C\*\* - Safe shutdown (saves data, disconnects players)
-
-
-
-\## How It Works
-
-
-
-\*\*Update Process:\*\*
-
-```
-
-Source: C:\\Recreate\\Lucera\\out\\jar\\\*.jar
-
-Destination: C:\\Users\\Dev\\Desktop\\MyServer\\gameserver\\libs\\
-
-```
-
-
-
-\*\*Safe Shutdown:\*\*
-
-1\. Sends Ctrl+C signal to Java process
-
-2\. Java saves all data and disconnects players
-
-3\. Waits up to 30 seconds
-
-4\. Forces shutdown if timeout
-
-
-
-\## Build
+Execute o seguinte comando para compilar o executável:
 
 ```bash
-
 dotnet build -c Release
-
 ```
 
+A saída estará localizada em: `bin/Release/net9.0/GS.exe`
 
+-----
 
-Output: `bin/Release/net9.0/GS.exe`
+## 🖥️ Exemplo de Saída
 
-
-
-\## Example Output
-
-```
-
+```console
 Starting GameServer...
-
 Press Ctrl+C to stop server safely
 
-
-
-\[21:15:32]  INFO GameServer: Server starting...
-
-\[21:15:40]  INFO GameServer: Server is now online
-
-
+[21:15:32]  INFO GameServer: Server starting...
+[21:15:40]  INFO GameServer: Server is now online
 
 Ctrl+C detected. Initiating safe shutdown...
-
 Waiting for server to save and shutdown...
-
 ✓ Server stopped gracefully
-
 ```
 
+-----
 
+## 🔁 Fluxo de Trabalho (Workflow)
 
-\## Workflow
-
-
-
-1\. Edit code in IntelliJ IDEA
-
-2\. Build artifacts (JARs → `out\\jar\\`)
-
-3\. Run `GameServer.exe`
-
-4\. Select option 2 (Start with updates)
-
-5\. Ctrl+C to stop
-
-6\. Repeat
-
-
-\## Troubleshooting
-
-
-
-\- \*\*Server won't start:\*\* Check Java in PATH (`java -version`)
-
-\- \*\*Updates not working:\*\* Verify `OutputJarPath` exists
-
-\- \*\*Forced shutdown:\*\* Server took >30s to stop, killed forcefully
-
+1.  Edite o código do seu servidor L2 no IntelliJ IDEA.
+2.  Compile seus artefatos (que gera os JARs em `out\jar\`).
+3.  Execute o `GS.exe` (esta aplicação).
+4.  Selecione a opção **2** (Iniciar Servidor com atualizações).
+5.  Para parar, pressione **`Ctrl+C`**.
+6.  Repita.
