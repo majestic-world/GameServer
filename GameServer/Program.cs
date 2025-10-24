@@ -6,7 +6,7 @@ namespace GameServer;
 internal static class ServerManager
 {
     private const string ServerPath = @"C:\Users\Dev\Desktop\MyServer\gameserver";
-    private const string JavaArgs = "-server -Dfile.encoding=UTF-8 -Xmx8G";
+    private const string JavaArgs = "-server -Dfile.encoding=UTF-8 -Xmx5G";
     private const string MainClass = "l2.gameserver.GameServer";
     private const string OutputJarPath = @"C:\Recreate\Lucera\out\jar";
 
