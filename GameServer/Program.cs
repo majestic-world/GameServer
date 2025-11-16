@@ -6,8 +6,7 @@ namespace GameServer;
 internal static class ServerManager
 {
     private const string ServerPath = @"C:\Users\Dev\Desktop\MyServer\gameserver";
-    private const string JavaArgs = "-server -Dfile.encoding=UTF-8 -Xmx5G";
-    private const string MainClass = "l2.gameserver.GameServer";
+    private const string JavaArgs = "-server -Dfile.encoding=UTF-8 -Xmx8G -cp config;./libs/* l2.gameserver.GameServer";
     private const string OutputJarPath = @"C:\Recreate\Lucera\out\jar";
 
     private const uint CtrlCEvent = 0;
@@ -56,8 +55,6 @@ internal static class ServerManager
                     StopServer();
                     break;
                 case "5":
-                    if (_serverProcess is not { HasExited: false }) return;
-                    Console.WriteLine("\nServer is running. Stop it first? (Y/N)");
                     if (Console.ReadKey().Key == ConsoleKey.Y)
                         StopServer();
                     else
@@ -93,14 +90,14 @@ internal static class ServerManager
 
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Starting GameServer...");
+        Console.WriteLine("Starting...");
         Console.WriteLine("Press Ctrl+C to stop server safely\n");
         Console.ResetColor();
 
         var startInfo = new ProcessStartInfo
         {
             FileName = "java",
-            Arguments = $"{JavaArgs} -cp config;./libs/* {MainClass}",
+            Arguments = JavaArgs,
             WorkingDirectory = ServerPath,
             UseShellExecute = false,
             RedirectStandardOutput = true,
@@ -219,7 +216,7 @@ internal static class ServerManager
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\n✓ Server stopped gracefully");
+                Console.WriteLine("\nServer stopped gracefully");
                 Console.ResetColor();
             }
         }
@@ -251,8 +248,6 @@ internal static class ServerManager
         Console.ResetColor();
         Console.WriteLine();
 
-        var destLibs = Path.Combine(ServerPath, "libs");
-
         if (!Directory.Exists(OutputJarPath))
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -275,14 +270,14 @@ internal static class ServerManager
         foreach (var jarFile in jarFiles)
         {
             var fileName = Path.GetFileName(jarFile);
-            var destFile = Path.Combine(destLibs, fileName);
+            var destFile = Path.Combine(ServerPath, "libs", fileName);
 
             try
             {
                 Console.Write($"Updating {fileName}... ");
-                File.Move(jarFile, destFile, true);
+                File.Copy(jarFile, destFile, true);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("✓");
+                Console.WriteLine("Ok");
                 Console.ResetColor();
                 updated++;
             }
@@ -298,7 +293,7 @@ internal static class ServerManager
         if (updated > 0)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"✓ {updated} JAR file(s) updated successfully");
+            Console.WriteLine($"{updated} JAR file(s) updated successfully");
             Console.ResetColor();
         }
         else
