@@ -6,8 +6,9 @@ namespace GameServer;
 internal static class ServerManager
 {
     private const string ServerPath = @"C:\Users\Dev\Desktop\MyServer\gameserver";
+    private const string JavaPath = @"C:\Users\Dev\Documents\java\jdk-25.0.1\bin";
     private const string JavaArgs = "-server -Dfile.encoding=UTF-8 -Xmx8G -cp config;./libs/* l2.gameserver.GameServer";
-    private const string OutputJarPath = @"C:\Recreate\Lucera\out\jar";
+    private const string OutputJarPath = @"C:\Java\lucera_test\lucera\out\artifacts";
 
     private const uint CtrlCEvent = 0;
     private static Process? _serverProcess;
@@ -96,7 +97,7 @@ internal static class ServerManager
 
         var startInfo = new ProcessStartInfo
         {
-            FileName = "java",
+            FileName = Path.Combine(JavaPath, "java"),
             Arguments = JavaArgs,
             WorkingDirectory = ServerPath,
             UseShellExecute = false,
