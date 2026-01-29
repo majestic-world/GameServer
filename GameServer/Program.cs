@@ -5,10 +5,10 @@ namespace GameServer;
 
 internal static class ServerManager
 {
-    private const string ServerPath = @"C:\Users\Dev\Desktop\MyServer\gameserver";
-    private const string JavaPath = @"C:\Users\Dev\Documents\java\jdk-25.0.1\bin";
+    private const string ServerPath = @"C:\Users\Mk\Desktop\MyServer\gameserver";
+    private const string JavaPath = @"C:\Users\Mk\Documents\Java\jdk-25.0.1\bin";
     private const string JavaArgs = "-server -Dfile.encoding=UTF-8 -Xmx8G -cp config;./libs/* l2.gameserver.GameServer";
-    private const string OutputJarPath = @"C:\Java\lucera_test\lucera\out\artifacts";
+    private const string OutputJarPath = @"C:\workspace\java\Majestic-Pack\build\artifacts";
 
     private const uint CtrlCEvent = 0;
     private static Process? _serverProcess;
@@ -162,15 +162,6 @@ internal static class ServerManager
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\n========================================");
                     Console.WriteLine("Server Terminated with Error!");
-                    Console.WriteLine("========================================");
-                    Console.ResetColor();
-                    Console.WriteLine("\nPress any key to continue...");
-                    Console.ReadKey();
-                    break;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("\n========================================");
-                    Console.WriteLine("Server Stopped Successfully");
                     Console.WriteLine("========================================");
                     Console.ResetColor();
                     Console.WriteLine("\nPress any key to continue...");
