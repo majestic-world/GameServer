@@ -39,5 +39,5 @@ Pressione `Ctrl+C` para desligamento seguro a qualquer momento.
 ## Build
 
 ```bash
-publish -c Release -r win-x64
+dotnet publish -c Release -r win-x64
 ```

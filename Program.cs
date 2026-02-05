@@ -27,7 +27,7 @@ internal static class ServerManager
 
     private static void Main()
     {
-        Console.Title = "Majestic-World Server Manager";
+        Console.Title = "GameServer Manager By Mk";
         SetConsoleCtrlHandler(ConsoleCtrlHandler, true);
 
         while (true)
@@ -79,7 +79,7 @@ internal static class ServerManager
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("╔═══════════════════════════════════════╗");
-        Console.WriteLine("║     Majestic-World Server Manager     ║");
+        Console.WriteLine("║       GameServer Manager By Mk        ║");
         Console.WriteLine("╚═══════════════════════════════════════╝");
         Console.ResetColor();
         Console.WriteLine();
