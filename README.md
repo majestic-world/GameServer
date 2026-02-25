@@ -36,6 +36,15 @@ Execute `GS.exe` e escolha uma opção:
 
 Pressione `Ctrl+C` para desligamento seguro a qualquer momento.
 
+## Exemplo arquivo de configuração:
+#### GameServer.properties
+```csharp
+ServerPath="C:\Users\Mk\Desktop\MyServer\gameserver"
+JavaPath="C:\Users\Mk\Documents\Java\bellsoft\jdk-25.0.2\bin"
+JavaArgs="-server -Dfile.encoding=UTF-8 -Xmx8G -cp config;./libs/* l2.gameserver.GameServer"
+OutputJarPath="C:\workspace\java\Majestic-Pack\build\artifacts"
+```
+
 ## Build
 
 ```bash
