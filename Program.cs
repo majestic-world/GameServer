@@ -85,11 +85,11 @@ internal static class ServerManager
 
     private static void StartServer(bool updateFirst)
     {
+        Console.Clear();
         if (updateFirst) UpdateJars();
 
-        Console.Clear();
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Starting...");
+        Console.WriteLine("\nStarting...");
         Console.WriteLine("Press Ctrl+C to stop server safely\n");
         Console.ResetColor();
 
@@ -238,52 +238,57 @@ internal static class ServerManager
         Console.ResetColor();
         Console.WriteLine();
 
-        if (!Directory.Exists(_config.OutputJarPath))
+        var totalUpdated = 0;
+
+        foreach (var outputPath in _config.OutputJarPaths)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Output directory not found: {_config.OutputJarPath}");
-            Console.ResetColor();
-            return;
-        }
-
-        var jarFiles = Directory.GetFiles(_config.OutputJarPath, "*.jar");
-
-        if (jarFiles.Length == 0)
-        {
-            return;
-        }
-
-        Console.WriteLine($"Found {jarFiles.Length} JAR file(s):\n");
-
-        var updated = 0;
-
-        foreach (var jarFile in jarFiles)
-        {
-            var fileName = Path.GetFileName(jarFile);
-            var destFile = Path.Combine(_config.ServerPath, "libs", fileName);
-
-            try
-            {
-                Console.Write($"Updating {fileName}... ");
-                File.Copy(jarFile, destFile, true);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Ok");
-                Console.ResetColor();
-                updated++;
-            }
-            catch (Exception ex)
+            if (!Directory.Exists(outputPath))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"✗ Error: {ex.Message}");
+                Console.WriteLine($"Output directory not found: {outputPath}");
                 Console.ResetColor();
+                continue;
             }
+
+            var jarFiles = Directory.GetFiles(outputPath, "*.jar");
+
+            if (jarFiles.Length == 0)
+                continue;
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"[{outputPath}]");
+            Console.ResetColor();
+            Console.WriteLine($"Found {jarFiles.Length} JAR file(s):\n");
+
+            foreach (var jarFile in jarFiles)
+            {
+                var fileName = Path.GetFileName(jarFile);
+                var destFile = Path.Combine(_config.ResolvedCopyPath, fileName);
+
+                try
+                {
+                    Console.Write($"Updating {fileName}... ");
+                    File.Copy(jarFile, destFile, true);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Ok");
+                    Console.ResetColor();
+                    totalUpdated++;
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"✗ Error: {ex.Message}");
+                    Console.ResetColor();
+                }
+            }
+
+            Console.WriteLine();
         }
 
-        Console.WriteLine();
-        if (updated > 0)
+        if (totalUpdated > 0)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{updated} JAR file(s) updated successfully");
+            Console.WriteLine($"{totalUpdated} JAR file(s) updated successfully");
             Console.ResetColor();
         }
         else
@@ -302,9 +307,14 @@ internal class ServerConfig
     private const string ConfigFileName = "GameServer.properties";
 
     public string ServerPath { get; private set; } = string.Empty;
+    public string ServerCopyPath { get; private set; } = string.Empty;
     public string JavaPath { get; private set; } = string.Empty;
     public string JavaArgs { get; private set; } = string.Empty;
-    public string OutputJarPath { get; private set; } = string.Empty;
+    public string[] OutputJarPaths { get; private set; } = [];
+
+    public string ResolvedCopyPath => string.IsNullOrEmpty(ServerCopyPath)
+        ? ServerPath
+        : Path.Combine(ServerPath, ServerCopyPath);
 
     public static ServerConfig Load()
     {
@@ -348,8 +358,11 @@ internal class ServerConfig
                     case "JavaArgs":
                         config.JavaArgs = value;
                         break;
+                    case "ServerCopyPath":
+                        config.ServerCopyPath = value;
+                        break;
                     case "OutputJarPath":
-                        config.OutputJarPath = value;
+                        config.OutputJarPaths = value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                         break;
                 }
             }
@@ -357,7 +370,7 @@ internal class ServerConfig
             if (string.IsNullOrEmpty(config.ServerPath) ||
                 string.IsNullOrEmpty(config.JavaPath) ||
                 string.IsNullOrEmpty(config.JavaArgs) ||
-                string.IsNullOrEmpty(config.OutputJarPath))
+                config.OutputJarPaths.Length == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error: Configuration file is incomplete!");
