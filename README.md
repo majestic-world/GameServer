@@ -1,52 +1,50 @@
 # Majestic-World Server Manager
 
-Gerenciador de console para servidores Lineage 2 com desligamento seguro e atualizações automáticas.
+Gerenciador de console para servidores Lineage 2 com desligamento seguro e atualizações automáticas, agora reescrito em Rust para máxima performance e uso direto da API do Windows.
 
 ## Recursos
 
-- Desligamento seguro via `Ctrl+C`
-- Atualização automática dos arquivos `.jar`
-- Logs coloridos (erros, avisos, shutdown)
-- Reinício automático em caso de crash
+- Desligamento seguro via `Ctrl+C` com injeção de eventos via Windows API
+- Atualização rápida e compacta dos arquivos `.jar`
+- Logs formatados e coloridos no console nativo (erros, avisos, shutdown)
+- Reinício automático seguro em caso de necessidade
+- Interface enxuta (com atalhos ocultos para funções extras)
 
 ## Requisitos
 
-- .NET 10 (Native AOT)
+- Rust e Cargo (apenas para compilação)
 - Java 17+
 - Windows
 
-## Configuração
-
-Edite os caminhos no `Program.cs`:
-
-```csharp
-private const string ServerPath = @"C:\Users\Dev\Desktop\MyServer\gameserver";
-private const string OutputJarPath = @"C:\Recreate\Lucera\out\jar";
-```
-
 ## Uso
 
-Execute `GS.exe` e escolha uma opção:
+Execute o binário `GameServer.exe`. O menu principal oferece as opções:
 
-1. Iniciar servidor
-2. Iniciar servidor (com atualizações)
-3. Atualizar JARs apenas
-4. Parar servidor
-5. Sair
+1. Start Server
+2. Start Server (with updates)
 
-Pressione `Ctrl+C` para desligamento seguro a qualquer momento.
+A interface exibirá apenas as opções primárias de listagem. _Atalhos ocultos (3, 4 e 5)_ continuam existindo de forma secreta para executar tarefas individuais como update isolado, shutdown manual e fechamento.
 
-## Exemplo arquivo de configuração:
-#### GameServer.properties
-```csharp
+Pressione `Ctrl+C` a qualquer momento em que o servidor estiver rodando para enviar o sinal de desligamento seguro.
+
+## Configuração
+
+O aplicativo buscará um arquivo `GameServer.properties` no mesmo diretório do executável. O padrão de propriedades é o seguinte:
+
+```properties
 ServerPath="C:\Users\Mk\Desktop\MyServer\gameserver"
-JavaPath="C:\Users\Mk\Documents\Java\bellsoft\jdk-25.0.2\bin"
+ServerCopyPath="libs"
+JavaPath="C:\Users\Mk\Documents\Java\jdk-25.0.1\bin"
 JavaArgs="-server -Dfile.encoding=UTF-8 -Xmx8G -cp config;./libs/* l2.gameserver.GameServer"
 OutputJarPath="C:\workspace\java\Majestic-Pack\build\artifacts"
 ```
 
 ## Build
 
+Para compilar uma versão nativa e super otimizada:
+
 ```bash
-dotnet publish -c Release -r win-x64
+cargo build --release
 ```
+
+Após o build, o tamanho final ficará super enxuto e disponível sob `target/release/GameServer.exe`.
