@@ -33,7 +33,7 @@ O aplicativo buscará um arquivo `GameServer.properties` no mesmo diretório do 
 
 ```properties
 ServerPath="C:\Users\Mk\Desktop\MyServer\gameserver"
-ServerCopyPath="libs"
+ServerCopyPath="libs" #Optional
 JavaPath="C:\Users\Mk\Documents\Java\jdk-25.0.1\bin"
 JavaArgs="-server -Dfile.encoding=UTF-8 -Xmx8G -cp config;./libs/* l2.gameserver.GameServer"
 OutputJarPath="C:\workspace\java\Majestic-Pack\build\artifacts"

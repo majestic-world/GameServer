@@ -82,14 +82,18 @@ impl ServerConfig {
 
             if let Some((key, value)) = line.split_once('=') {
                 let key = key.trim();
-                let value = value.trim().trim_matches('"');
+                let mut val = value.trim();
+                if let Some(idx) = val.find('#') {
+                    val = val[..idx].trim();
+                }
+                let val = val.trim_matches('"');
                 match key {
-                    "ServerPath" => config.server_path = value.to_string(),
-                    "JavaPath" => config.java_path = value.to_string(),
-                    "JavaArgs" => config.java_args = value.to_string(),
-                    "ServerCopyPath" => config.server_copy_path = value.to_string(),
+                    "ServerPath" => config.server_path = val.to_string(),
+                    "JavaPath" => config.java_path = val.to_string(),
+                    "JavaArgs" => config.java_args = val.to_string(),
+                    "ServerCopyPath" => config.server_copy_path = val.to_string(),
                     "OutputJarPath" => {
-                        config.output_jar_paths = value
+                        config.output_jar_paths = val
                             .split(';')
                             .map(|s| s.trim().to_string())
                             .filter(|s| !s.is_empty())
